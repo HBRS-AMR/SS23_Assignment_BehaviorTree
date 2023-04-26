@@ -1,68 +1,144 @@
-# WS22_Assignment_BehaviorTree
+# SS23_Assignment_BehaviorTree
 
 ## Task:
-In this assignment, the motivation is to look into the implementation of behavior tree to achieve priliminary robot safety features such as low battery warning and collison avoidance. This exercise will further help in your project on bulding a wall-following robot.
-
+In this assignment, we will be looking into the implementation of behavior tree to achieve preliminary robot safety features to handle situations such as battery dropping below a threshold value and avoiding possible collisions. This exercise will further help in your project on building an autonomous wall-following behavior.
 
 ## Overview:
 
-Majority of implementations of behavior trees in robotics are using 'BehaviorTree.CPP' and 'py_trees'. 'py_trees_ros' is a wrapper for 'py_trees' to integrate with ROS. We will be using 'py_trees_ros' to implement behavior trees. ROS1 supports '0.6.0' version of 'py_trees_ros' package.
+The majority of implementations of behavior trees in robotics are using 'BehaviorTree.CPP' in cpp and 'py_trees' in python. 'py_trees_ros' is a wrapper for 'py_trees' to integrate py_trees with ROS. We will be using 'py_trees_ros' to implement behavior trees. 
 
-Please clone the repository of the assignment("https://github.com/HBRS-AMR/WS22_Assignment_BehaviorTree.git") on your system. Please find the following description of the files:
+Please clone the repository of the assignment("https://github.com/HBRS-AMR/SS23_Assignment_BehaviorTree.git") in the src/ folder of your workspace (It can be cloned inside the workspace having rolling packages as well).
 
-1. **behaviors.py**: characteristics of different behaviors are defined in this script.
+Description of the files:
 
-2. **battery_check.py**: behavior tree to constantly check the battery status of the robot and to trigger rotation behavior once the battery level goes beyond a threshold value has to be built. Please find the example for battery_check behavior tree below:
-![battery check BT](/behavior_tree/images/battery_check.png)
+1. **behaviors.py**: all behaviors that can be used in behavior tree are defined can be described this script.
 
-3. **collison_avoidance.py**: behavior tree which adds a new feature of collison avoidance to the battery_check behavior tree has to be built. Please find the example for collison_avoidance behavior tree below:
-![collison avoidance BT](/behavior_tree/images/collison_battery.png)
+2. **battery_monitor.py**: is a behavior tree implementation to constantly check the battery status of the robot and to trigger rotation behavior once the battery level goes beyond a threshold value. Please find the example for battery_monitor behavior tree below:
+![battery check BT](images/battery_monitor.png)
 
-4. **simple_publisher.py**: whenever the scripts are being run locally, then this node can be used to instantiate relevant topics such as '/cmd_vel' and '/mileage'.
+3. **collison_avoidance.py**: is a behavior tree implementation which adds a new feature of collision avoidance to the battery_monitor behavior tree. Please find the example for collison_avoidance behavior tree below:
+![collision avoidance BT](images/collison_battery.png)
+
+## Task:
+
+To complete the scripts in **behaviors.py**, **battery_monitor.py** and **collison_avoidance.py** according to the instructions given in the scripts. The py_trees [documentation](https://py-trees.readthedocs.io/en/release-2.1.x/introduction.html) and py_trees_ros [tutorial](https://py-trees-ros-tutorials.readthedocs.io/en/release-2.1.x/tutorials.html) page are helpful to understand the implementation of behavior trees.
 
 ## Setting up your system:
 
-1. Please install py_trees visualiser using following command: 
+1. In Ubuntu 20.04, behavior tree has support for ROS2 foxy version. So along with ROS2 rolling (which you have already installed, if not please follow the steps from the [first worksheet](https://github.com/HBRS-AMR/Robile/tree/rolling/worksheets/worksheet01)), please install ROS2 foxy version using the following set of commands from [here](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html):
+
+    ```
+    sudo apt install software-properties-common
+
+    sudo add-apt-repository universe
+
+    sudo apt update && sudo apt install curl -y
+
+    sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+    
+    sudo apt update
+
+    sudo apt upgrade
+
+    sudo apt install ros-foxy-desktop python3-argcomplete
+    ```
+
+2. If not completed already, please clone the assignment file ("https://github.com/HBRS-AMR/SS23_Assignment_BehaviorTree.git") in the src folder of your workspace (it can be cloned inside the workspace having rolling packages as well). Source the ROS2 foxy setup file. Whenever behavior tree related packages are to be run, please source this file followed by the workspace setup file:
+    ```
+    source /opt/ros/foxy/setup.bash
+    ```
+
+    From the workspace directory, build the workspace:
+    ```
+    colcon build --symlink-install
+    ```
+
+    Now source the workspace setup file:
+    ```
+    source install/local_setup.bash
+    ```
+
+3. From the `same terminal`, install the py_trees related packages: 
 
     ``` 
-    sudo apt install ros-noetic-rqt-py-trees ros-noetic-rqt-reconfigure
+    ros-foxy-py-trees
+
+    ros-foxy-py-trees-ros
+
+    ros-foxy-py-trees-ros-interfaces
+
+    ros-foxy-py-trees-ros-viewer
 
     sudo apt-get install xcb
     ```
 
-2. Clone py_trees_ros ("git@github.com:splintered-reality/py_trees_ros.git") to your catkin workspace and checkout to the '0.6.0' branch.
-
-3. Clone the assignment file ("https://github.com/HBRS-AMR/WS22_Assignment_BehaviorTree.git") in your system.
-
 ## Instructions to run scripts:
 
-1. It is recommended to verify your implementation locally before testing on the robot. _simple_publisher.py_ node can be used to instantiate necessary topics.
+1. Please install the teleop-twist-keyboard package to control the robot in the simulation.
+```
+source /opt/ros/rolling/setup.bash
+sudo apt-get install ros-rolling-teleop-twist-keyboard
+```
 
-2. While running the scripts on local machine, please make sure to run 'roscore' command in one of the terminals.
+2. Keep at least two terminals reserved for running the behavior tree launch file and the visualisation tool (described further down in this section) and source the ROS2 foxy setup file and the corresponding workspace setup file:
+    ```
+    source /opt/ros/foxy/setup.bash
+    source install/setup.bash
+    ```
 
-3. As the voltage values are not readily available for ROS interface, please publish the voltage values in a new terminal. 
+    In the rest of the terminals (to launch simulation, publish voltage commands, to use teleop etc.), source the ROS2 rolling setup file and the corresponding workspace setup file:
+    ```
+    source /opt/ros/rolling/setup.bash
+    source install/setup.bash
+    ```
+
+3. Please test your implementation in simulation and then on the real robot. Please refer to the [first worksheet](https://github.com/HBRS-AMR/Robile/tree/rolling/worksheets/worksheet01) to run the Robile in simulation. Once the robot is running in simulation, in the terminals reserved for launching behavior trees, launch the behavior tree launch file. For example, to launch collison_avoidance behavior tree, please run the following command:
+    ```
+    ros2 launch autonomous_map_update collison_avoidance.launch.py
+    ```
+
+4. To control the robot in simulation, please run the following command:
+```
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
+
+5. As the battery percentage is not readily available for ROS2 interface, please publish the battery percentage values in a new terminal. From the below example, instead of 50.0, please publish the battery percentage value of your choice:
     ```  
-    Eg: 'rostopic pub /mileage std_msgs/Float32 "data: 60.0" -r 10'
+    ros2 topic  pub /battery_voltage std_msgs/msg/Float32  data:\ 50.0\ 
     ```
 
-4. While running on the robot, please run the launch file in 'robile_bringup' package:
+6. This point is relevant only when you are running on the real robot. If running in simulation, please skip to the next point. On the real robot, please run the launch file in 'robile_bringup' package:
     ```
-    roslaunch robile_bringup robot.launch
+    ros2 launch robile_bringup robot.launch
     ```
     Once it is running, in a new terminal assign the variable 'ROS_MASTER_URI'
     ```
     export ROS_MASTER_URI=http://<robile_ip_address>:11311 && export ROS_IP=<your_system_ip_address>
     ```
-    For details regarding the passwords and ip address, please refer to relevant sections in the documentation('https://robile-amr.readthedocs.io/en/latest/Tutorial/Demo%20Mapping.html')
-
-4. To visualise the behavior tree, please run the following command:
+    For example, on Robile3, assuming the ip address of the system on `Robile5G` is 192.168.0.100 (you can check the ip address of your system by running `ifconfig` in a new terminal)
     ```
-    rqt_py_trees
-    OR
-    py-trees-tree-watcher
+    export ROS_MASTER_URI=http://192.168.0.103 && export ROS_IP=192.168.0.100
+    ```
+    In the same terminal, launch the behavior tree launch file. For example, to launch collison_avoidance behavior tree, please run the following command:
+    ```
+    ros2 launch autonomous_map_update collison_avoidance.launch.py
     ```
 
-5. The values in the 'blackboard' can be displayed by running following command:
+7. To visualize the behavior tree and view the instantaneous status of behaviors, please run the following command (this should be run in the terminal where the setup file of foxy is sourced):
+    ```
+    py-trees-tree-viewer
+    ```
+
+8. To render a graph of the behavior tree as an image file, please run the following command (this should be run in the terminal where the setup file of foxy is sourced):
+    ```
+    py-trees-render -b autonomous_map_navigate.battery_monitor.create_root
+
+    py-trees-render -b autonomous_map_navigate.collison_avoidance.create_root
+    ```
+
+9. The values in the 'blackboard' can be displayed by running the following command (this should be run in the terminal where the setup file of foxy is sourced):
     ```
     py-trees-blackboard-watcher
     ```
@@ -72,4 +148,6 @@ Please clone the repository of the assignment("https://github.com/HBRS-AMR/WS22_
 1. [Behavior Trees in Action:
 A Study of Robotics Applications](https://arxiv.org/pdf/2010.06256.pdf)
 
-2. Tutorial for behavior tree implementation: http://docs.ros.org/en/noetic/api/py_trees_ros/html/
+2. Tutorial for behavior tree implementation (py_trees_ros): https://py-trees-ros-tutorials.readthedocs.io/en/release-2.1.x/tutorials.html
+
+3. Tutorial for py_trees: https://py-trees.readthedocs.io/en/release-2.1.x/introduction.html
