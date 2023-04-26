@@ -13,10 +13,10 @@ Description of the files:
 
 1. **behaviors.py**: all behaviors that can be used in behavior tree are defined can be described this script.
 
-2. **battery_monitor.py**: is a behavior tree implementation to constantly check the battery status of the robot and to trigger rotation behavior once the battery level goes beyond a threshold value. Please find the example for battery_monitor behavior tree below:
+2. **battery_monitor.py**: is a behavior tree implementation to constantly check the battery status of the robot and to trigger rotation behavior once the battery level goes beyond a threshold value. Please find the sample visualisation for battery_monitor behavior tree below:
 ![battery check BT](images/battery_monitor.png)
 
-3. **collison_avoidance.py**: is a behavior tree implementation which adds a new feature of collision avoidance to the battery_monitor behavior tree. Please find the example for collison_avoidance behavior tree below:
+3. **collison_avoidance.py**: is a behavior tree implementation which adds a new feature of collision avoidance to the battery_monitor behavior tree. Please find the sample visualisation for collison_avoidance behavior tree below:
 ![collision avoidance BT](images/collison_battery.png)
 
 ## Task:
@@ -27,7 +27,7 @@ To complete the scripts in **behaviors.py**, **battery_monitor.py** and **collis
 
 1. In Ubuntu 20.04, behavior tree has support for ROS2 foxy version. So along with ROS2 rolling (which you have already installed, if not please follow the steps from the [first worksheet](https://github.com/HBRS-AMR/Robile/tree/rolling/worksheets/worksheet01)), please install ROS2 foxy version using the following set of commands from [here](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html):
 
-```
+    ```
     sudo apt install software-properties-common
 
     sudo add-apt-repository universe
@@ -43,6 +43,7 @@ To complete the scripts in **behaviors.py**, **battery_monitor.py** and **collis
     sudo apt upgrade
 
     sudo apt install ros-foxy-desktop python3-argcomplete
+
     ```
 
 2. If not completed already, please clone the assignment file ("https://github.com/HBRS-AMR/SS23_Assignment_BehaviorTree.git") in the src folder of your workspace (it can be cloned inside the workspace having rolling packages as well). Source the ROS2 foxy setup file. Whenever behavior tree related packages are to be run, please source this file followed by the workspace setup file:
