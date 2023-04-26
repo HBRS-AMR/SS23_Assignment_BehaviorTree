@@ -14,10 +14,10 @@ Description of the files:
 1. **behaviors.py**: all behaviors that can be used in behavior tree are defined can be described this script.
 
 2. **battery_monitor.py**: is a behavior tree implementation to constantly check the battery status of the robot and to trigger rotation behavior once the battery level goes beyond a threshold value. Please find the example for battery_monitor behavior tree below:
-![battery check BT](images/battery_monitor.png)
+![battery check BT](/images/battery_monitor.png)
 
 3. **collison_avoidance.py**: is a behavior tree implementation which adds a new feature of collision avoidance to the battery_monitor behavior tree. Please find the example for collison_avoidance behavior tree below:
-![collision avoidance BT](images/collison_battery.png)
+![collision avoidance BT](/images/collison_battery.png)
 
 ## Task:
 
@@ -27,7 +27,7 @@ To complete the scripts in **behaviors.py**, **battery_monitor.py** and **collis
 
 1. In Ubuntu 20.04, behavior tree has support for ROS2 foxy version. So along with ROS2 rolling (which you have already installed, if not please follow the steps from the [first worksheet](https://github.com/HBRS-AMR/Robile/tree/rolling/worksheets/worksheet01)), please install ROS2 foxy version using the following set of commands from [here](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html):
 
-    ```
+```
     sudo apt install software-properties-common
 
     sudo add-apt-repository universe
@@ -77,10 +77,10 @@ To complete the scripts in **behaviors.py**, **battery_monitor.py** and **collis
 ## Instructions to run scripts:
 
 1. Please install the teleop-twist-keyboard package to control the robot in the simulation.
-```
-source /opt/ros/rolling/setup.bash
-sudo apt-get install ros-rolling-teleop-twist-keyboard
-```
+    ```
+    source /opt/ros/rolling/setup.bash
+    sudo apt-get install ros-rolling-teleop-twist-keyboard
+    ```
 
 2. Keep at least two terminals reserved for running the behavior tree launch file and the visualisation tool (described further down in this section) and source the ROS2 foxy setup file and the corresponding workspace setup file:
     ```
@@ -100,9 +100,9 @@ sudo apt-get install ros-rolling-teleop-twist-keyboard
     ```
 
 4. To control the robot in simulation, please run the following command:
-```
-ros2 run teleop_twist_keyboard teleop_twist_keyboard
-```
+    ```
+    ros2 run teleop_twist_keyboard teleop_twist_keyboard
+    ```
 
 5. As the battery percentage is not readily available for ROS2 interface, please publish the battery percentage values in a new terminal. From the below example, instead of 50.0, please publish the battery percentage value of your choice:
     ```  
