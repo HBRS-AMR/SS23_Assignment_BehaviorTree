@@ -14,10 +14,10 @@ Description of the files:
 1. **behaviors.py**: all behaviors that can be used in behavior tree are defined can be described this script.
 
 2. **battery_monitor.py**: is a behavior tree implementation to constantly check the battery status of the robot and to trigger rotation behavior once the battery level goes beyond a threshold value. Please find the example for battery_monitor behavior tree below:
-![battery check BT](/images/battery_monitor.png)
+![battery check BT](images/battery_monitor.png)
 
 3. **collison_avoidance.py**: is a behavior tree implementation which adds a new feature of collision avoidance to the battery_monitor behavior tree. Please find the example for collison_avoidance behavior tree below:
-![collision avoidance BT](/images/collison_battery.png)
+![collision avoidance BT](images/collison_battery.png)
 
 ## Task:
 
