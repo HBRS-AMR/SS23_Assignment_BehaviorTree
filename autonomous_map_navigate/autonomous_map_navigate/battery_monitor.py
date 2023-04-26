@@ -53,7 +53,7 @@ def create_root():
     
 
     """
-    construct the behvior tree structure using the nodes and behaviors defined above
+    construct the behavior tree structure using the nodes and behaviors defined above
     """
 
     ### YOUR CODE HERE ###

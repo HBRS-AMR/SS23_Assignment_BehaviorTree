@@ -156,12 +156,12 @@ class stop_motion(pt.behaviour.Behaviour):
         "/dev/input/js0". It is similar to just pressing the deadman button on the joystick.
         Nothing to implement here.
         """
-
-        joyMessage = Joy()
-        joyMessage.header.frame_id = "/dev/input/js0"
-        joyMessage.axes = [0, 0, 0, 0, 0, 0]
-        joyMessage.buttons = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
-        self.joy_pub.publish(joyMessage)        
+        ## Uncomment the following lines to publish Joy() message when running on the robot ##
+        # joyMessage = Joy()
+        # joyMessage.header.frame_id = "/dev/input/js0"
+        # joyMessage.axes = [0, 0, 0, 0, 0, 0]
+        # joyMessage.buttons = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+        # self.joy_pub.publish(joyMessage)        
 
         return pt.common.Status.SUCCESS
 
@@ -225,7 +225,6 @@ class battery_status2bb(ptr.subscribers.ToBlackboard):
         
         return status
 
-
 class laser_scan_2bb(ptr.subscribers.ToBlackboard):
 
     """
@@ -279,4 +278,3 @@ class laser_scan_2bb(ptr.subscribers.ToBlackboard):
         ## YOUR CODE HERE ##   
 
         return status
-
