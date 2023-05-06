@@ -110,21 +110,43 @@ To complete the scripts in **behaviors.py**, **battery_monitor.py** and **collis
     ros2 topic  pub /battery_voltage std_msgs/msg/Float32  data:\ 50.0\ 
     ```
 
-6. This point is relevant only when you are running on the real robot. If running in simulation, please skip to the next point. On the real robot, please run the launch file in 'robile_bringup' package:
+
+6. This point is relevant only when you are running on the real robot. If running in simulation, please skip to the next point. To run packages on the robot, please connect to the robot's wifi network (Robile_5G) and ssh to the robot (ip-address of robile3 is considered for the below example. Please replace with the ip-address of the robot you are using):
     ```
+    ssh -x studentkelo@192.168.0.103
     ros2 launch robile_bringup robot.launch
     ```
-    Once it is running, in a new terminal assign the variable 'ROS_MASTER_URI'
+    Once it is running, in a new terminal on your system, run the following commands (this is one time activity)
     ```
-    export ROS_MASTER_URI=http://<robile_ip_address>:11311 && export ROS_IP=<your_system_ip_address>
+    sudo ufw disable
+    sudo ufw allow in proto udp to 224.0.0.0/4
+    sudo ufw allow in proto udp from 224.0.0.0/4
     ```
-    For example, on Robile3, assuming the ip address of the system on `Robile5G` is 192.168.0.100 (you can check the ip address of your system by running `ifconfig` in a new terminal)
+
+    Now, based on the id of the robile you are using, set the 'ROS_DOMAIN_ID' environment variable in every terminal. Eg: for robile3, set it to 3. Proceed to get the list of topics:
+    
     ```
-    export ROS_MASTER_URI=http://192.168.0.103 && export ROS_IP=192.168.0.100
+    export ROS_DOMAIN_ID=3
+    ros2 topic list
+    ```   
+
+    If you get any error or if the entire list of topics is not printed, then run these commands and try again to get the list of topics:
     ```
-    In the same terminal, launch the behavior tree launch file. For example, to launch collison_avoidance behavior tree, please run the following command:
+    ros2 daemon stop
+    ros2 daemon start
+    ros2 topic list
+    ```
+
+    If you still face the error, please inform the TA.
+
+    Please proceed to launch the behavior tree launch file in the same terminal. For example, to launch collison_avoidance behavior tree, please run the following command:
     ```
     ros2 launch autonomous_map_update collison_avoidance.launch.py
+    ```
+
+    Similarly, in another terminal please make sure 'ros2 topic list' is working by following the steps above and run rviz. Select the appropriate config file or select the necessary topics for visualisation in rviz:
+    ```
+    rviz2
     ```
 
 7. To visualize the behavior tree and view the instantaneous status of behaviors, please run the following command (this should be run in the terminal where the setup file of foxy is sourced):
