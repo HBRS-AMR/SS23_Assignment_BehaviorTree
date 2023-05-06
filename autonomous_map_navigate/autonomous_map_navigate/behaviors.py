@@ -187,7 +187,7 @@ class battery_status2bb(ptr.subscribers.ToBlackboard):
     Checking battery status
     """
     def __init__(self, 
-                 topic_name: str="/battery_volatge",
+                 topic_name: str="/battery_voltage",
                  name: str=pt.common.Name.AUTO_GENERATED, 
                  threshold: float=30.0):
         super().__init__(name=name,
