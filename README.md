@@ -166,6 +166,31 @@ To complete the scripts in **behaviors.py**, **battery_monitor.py** and **collis
     py-trees-blackboard-watcher
     ```
 
+## Update to include mapping and localisation:
+
+1. Install following packages: 
+
+    ```
+    sudo apt install ros-foxy-slam-toolbox
+    sudo apt install ros-foxy-navigation2
+    sudo apt install ros-foxy-nav2-bringup
+    ```
+
+2. Clone the **slam_toolbox** repository to *src/* folder of your workspace:
+    ```
+    git clone -b foxy-devel https://github.com/HBRS-AMR/slam_toolbox.git
+    ```
+
+3. Copy lines 13 to 104 from **behaviors.py** to your existing behaviors.py script. The mapping node will construct the map and saves it at the termination condition and the localisation node reads this map as reference to localise in the world.
+
+4. Refer to **collison_avoidance.py** script for integration of mapping and localisation to your behavior tree. The termination condition for mapping is currently the timout variable, which is in seconds. However, this condition can be changed according to your preference.
+
+5. Pull from **robile_gazebo** repository and open **robile_foxy_nav.rviz** configuration file in foxy version, which is located at *robile_gazebo/config/* location.
+
+6. Once the behavior tree is running and the timeout is reached, the robot will disappear from rviz. At this point, select **2D Pose Estimate** and drag an arrow on the map, representing approximate location of the robot. This leads to visualisation of multiple arrows(particles) representing the evaluation of possibility of robot in those poses.
+
+7. Congratulations!! Now you have successfully mapped the environmnet and localised in it. 
+
 ## References:
 
 1. [Behavior Trees in Action:

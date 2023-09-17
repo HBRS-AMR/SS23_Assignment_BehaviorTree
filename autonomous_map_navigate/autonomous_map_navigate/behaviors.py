@@ -10,6 +10,98 @@ from sensor_msgs.msg import Joy
 import numpy as np
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy
 
+import time
+import os, signal
+import subprocess
+from ament_index_python.packages import get_package_share_directory
+
+class launchNodes(pt.behaviour.Behaviour):
+    """
+    to run launch files
+    """
+    def __init__(self, name="launch nodes", pkg="slam_toolbox", launch_file=None, mapping_time_out=30, mapping_dist_thresh=0.2, map_name='map'):
+        super(launchNodes, self).__init__(name)
+
+        self.name = launch_file
+        self.pkg = pkg
+        self.launch_file= launch_file
+        self.mapping_time_out = mapping_time_out
+        self.mapping_dist_thresh = mapping_dist_thresh
+        self.map_name = map_name
+
+        self.blackboard = self.attach_blackboard_client(name=self.name)
+        self.blackboard.register_key(key="mapping_status", access=pt.common.Access.WRITE)
+        self.blackboard.register_key(key="map_name", access=pt.common.Access.WRITE)
+        self.blackboard.set("mapping_status", "START")
+        self.blackboard.register_key(key="localisation_status", access=pt.common.Access.WRITE)
+        self.bringup_dir = get_package_share_directory('slam_toolbox')
+        self.map_path = self.bringup_dir+'/maps/'+self.map_name
+        
+    def setup(self, **kwargs):
+        """
+        Set up things that should be setup only for one time and which generally might 
+        require time to prevent delay in tree initialisation
+        """
+        info = "[LAUNCH "+self.name+"] setup"
+        self.logger.info(info)
+
+        try:
+            self.node = kwargs['node']
+        except KeyError as e:
+            error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(self.qualified_name)
+            raise KeyError(error_message) from e  # 'direct cause' traceability
+
+        self.feedback_message = "setup"
+        return True          
+
+    def update(self):
+        """
+        Primary function of the behavior is implemented in this method
+        """
+        info = "[LAUNCH "+self.name+"] update"
+        self.logger.info(info)
+        self.logger.debug("%s.update()" % self.__class__.__name__)
+
+        if self.launch_file=="online_async_launch.py":
+            if self.blackboard.get("mapping_status")=="START":
+                self.map_name = self.blackboard.set("map_name", self.map_name)
+                self.mapping_start_time = time.time()
+                self.mapping_process = subprocess.Popen(['ros2', 'launch', 'slam_toolbox', self.launch_file])                  
+                self.blackboard.set("mapping_status", "RUNNING")
+                info = "[LAUNCH "+self.name+"] update: started"
+                self.logger.info(info)
+                return pt.common.Status.RUNNING
+            elif self.blackboard.get("mapping_status")=="RUNNING":
+                # current_coordinate = np.array([self.blackboard.odom_data.position.x, self.blackboard.odom_data.position.y])
+                # dist_from_start_coord = np.linalg.norm(self.blackboard.start_coordinate-current_coordinate)
+                current_time = time.time()
+                time_passed = current_time-self.mapping_start_time
+                if time_passed > self.mapping_time_out:
+                    self.logger.info("[SAVE MAP] saving map")
+                    subprocess.run(['ros2', 'run', 'nav2_map_server','map_saver_cli','-f', self.map_path, '--ros-args', '-p', 'save_map_timeout:=10000'])
+                    self.blackboard.set("mapping_status", "SAVED")
+                    self.blackboard.set("localisation_status","START")
+                    # terminating the mapping node
+                    # self.mapping_process.terminate()
+                    mappinng_process_name = "slam_toolbox"
+                    for line in os.popen("ps ax | grep " + mappinng_process_name + " | grep -v grep"): # grep -v grep is used to remove the grep process which is also listed
+                        fields = line.split()
+                        # getting the PID of the node running as a process
+                        pid = fields[0]
+                        # terminating the process
+                        os.kill(int(pid), signal.SIGKILL)                    
+                    return pt.common.Status.SUCCESS
+                return pt.common.Status.RUNNING
+
+        elif self.launch_file=="localization_launch.py":
+            self.map_name = self.blackboard.get("map_name")
+            if self.blackboard.get("localisation_status")=="START":
+                self.localisation_process = subprocess.Popen(['ros2','launch','slam_toolbox', self.launch_file, 'map_name:='+self.map_name])
+                self.blackboard.set("localisation_status", "RUNNING")
+                info = "[LAUNCH "+self.name+"] update: started"
+                self.logger.info(info)
+
+        return pt.common.Status.SUCCESS
 
 class rotate(pt.behaviour.Behaviour):
 

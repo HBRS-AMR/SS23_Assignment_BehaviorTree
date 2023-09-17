@@ -39,6 +39,10 @@ def create_root() -> pt.behaviour.Behaviour:
     """
     ### YOUR CODE HERE ###
     
+    """
+    Create sequence node called "NavigationStack"
+    """
+    navigation_stack = pt.composites.Sequence("NavigationStack") 
 
     """
     Using the battery_status2bb class, create a node called "Battery2BB" which subscribes to the topic "/battery_voltage"
@@ -51,6 +55,14 @@ def create_root() -> pt.behaviour.Behaviour:
     """
     ### YOUR CODE HERE ###
 
+    """
+    Create mapping and localisation sequence nodes and coresponding child nodes for mapping and localisation
+    """
+    mapping = pt.composites.Sequence("Map")
+    localisation = pt.composites.Sequence("Localisation")
+
+    gmapping = launchNodes(name="GMapping", launch_file="online_async_launch.py", mapping_time_out=300, map_name='map') # mapping_time_out (in seconds), generally set to desired wall following time
+    amcl = launchNodes(name="AMCL", launch_file="localization_launch.py")
 
     """
     Read the 'battery_low_warning' and 'collison_warning' from the blackboard and set a decorator node called "Battery Low?" to check if the battery is low 
@@ -67,6 +79,14 @@ def create_root() -> pt.behaviour.Behaviour:
     """
 
     ### YOUR CODE HERE ###
+
+    ## Example (only for navigation stack), integrate it with rest of the behavior tree
+    root.add_child(navigation_stack)
+    
+    navigation_stack.add_children([mapping, localisation])
+
+    mapping.add_child(gmapping)
+    localisation.add_child(amcl)    
 
     return root
 
