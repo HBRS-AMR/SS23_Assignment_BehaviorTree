@@ -185,9 +185,10 @@ To complete the scripts in **behaviors.py**, **battery_monitor.py** and **collis
 
 4. Refer to **collison_avoidance.py** script for integration of mapping and localisation to your behavior tree. The termination condition for mapping is currently the timout variable, which is in seconds. However, this condition can be changed according to your preference.
 
-5. Pull from **robile_gazebo** repository and open **robile_foxy_nav.rviz** configuration file in foxy version, which is located at *robile_gazebo/config/* location.
+5. Pull from **robile_gazebo** repository and once the behavior tree is started, run **rviz2** in the terminal where ROS2-foxy is sourced and open **robile_foxy_nav.rviz** configuration file from *robile_gazebo/config/* location.
 
 6. Once the behavior tree is running and the timeout is reached, the robot will disappear from rviz. At this point, select **2D Pose Estimate** and drag an arrow on the map, representing approximate location of the robot. This leads to visualisation of multiple arrows(particles) representing the evaluation of possibility of robot in those poses.
+![AMCL particles](images/AMCL_particles.png)
 
 7. Congratulations!! Now you have successfully mapped the environmnet and localised in it. 
 
