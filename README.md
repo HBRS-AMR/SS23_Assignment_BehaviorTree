@@ -192,7 +192,7 @@ To complete the scripts in **behaviors.py**, **battery_monitor.py** and **collis
 
 7. Now move the robot using joypad until the arrows *almost* converges to actual robot's pose.
 
-8. Congratulations!! Now you have successfully mapped the environmnet and localised in it. 
+8. Congratulations!! Now you have successfully mapped the environment and localised in it. 
 
 ## References:
 
