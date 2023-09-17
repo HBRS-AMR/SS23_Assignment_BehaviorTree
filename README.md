@@ -190,7 +190,9 @@ To complete the scripts in **behaviors.py**, **battery_monitor.py** and **collis
 6. Once the behavior tree is running and the timeout is reached, the robot will disappear from rviz. At this point, select **2D Pose Estimate** and drag an arrow on the map, representing approximate location of the robot. This leads to visualisation of multiple arrows(particles) representing the evaluation of possibility of robot in those poses.
 ![AMCL particles](images/AMCL_particles.png)
 
-7. Congratulations!! Now you have successfully mapped the environmnet and localised in it. 
+7. Now move the robot using joypad until the arrows *almost* converges to actual robot's pose.
+
+8. Congratulations!! Now you have successfully mapped the environmnet and localised in it. 
 
 ## References:
 
