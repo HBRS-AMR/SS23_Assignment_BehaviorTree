@@ -166,7 +166,7 @@ To complete the scripts in **behaviors.py**, **battery_monitor.py** and **collis
     py-trees-blackboard-watcher
     ```
 
-## Update to include mapping and localisation:
+## Update to include mapping and localisation (Optional milestone):
 
 1. Install following packages: 
 
@@ -176,23 +176,26 @@ To complete the scripts in **behaviors.py**, **battery_monitor.py** and **collis
     sudo apt install ros-foxy-nav2-bringup
     ```
 
-2. Clone the **slam_toolbox** repository to *src/* folder of your workspace:
+2. Clone the **slam_toolbox** repository to *src/* folder of your workspace. Build this package from the workspace by sourcing ROS2-foxy:
     ```
     git clone -b foxy-devel https://github.com/HBRS-AMR/slam_toolbox.git
     ```
 
+
 3. Copy lines 13 to 104 from **behaviors.py** to your existing behaviors.py script. The mapping node will construct the map and saves it at the termination condition and the localisation node reads this map as reference to localise in the world.
 
-4. Refer to **collison_avoidance.py** script for integration of mapping and localisation to your behavior tree. The termination condition for mapping is currently the timout variable, which is in seconds. However, this condition can be changed according to your preference.
+4. Refer to **collison_avoidance.py** script for integration of mapping and localisation to your behavior tree. The termination condition for mapping is currently the timout variable, which is in seconds. However, this condition can be changed according to your preference. This value can be set based on your preference of duration of wall following behavior.
 
 5. Pull from **robile_gazebo** repository and once the behavior tree is started, run **rviz2** in the terminal where ROS2-foxy is sourced and open **robile_foxy_nav.rviz** configuration file from *robile_gazebo/config/* location.
 
-6. Once the behavior tree is running and the timeout is reached, the robot will disappear from rviz. At this point, select **2D Pose Estimate** and drag an arrow on the map, representing approximate location of the robot. This leads to visualisation of multiple arrows(particles) representing the evaluation of possibility of robot in those poses.
+6. The additional task would be to terminate wall following behavior when the *localisation_status* blackboard variable is having the value **RUNNING**.
+
+7. Once the behavior tree is running and the timeout is reached, the robot will disappear from rviz and based on the previous point, the wall following should be halted. At this point, select **2D Pose Estimate** and drag an arrow on the map, representing approximate location of the robot. This leads to visualisation of multiple arrows(particles) representing the evaluation of possibility of robot in those poses.
 ![AMCL particles](images/AMCL_particles.png)
 
-7. Now move the robot using joypad until the arrows *almost* converges to actual robot's pose.
+8. Now move the robot using joypad until the arrows *almost* converges to actual robot's pose.
 
-8. Congratulations!! Now you have successfully mapped the environment and localised in it. 
+9. Congratulations!! Now you have successfully mapped the environment and localised in it. 
 
 ## References:
 
