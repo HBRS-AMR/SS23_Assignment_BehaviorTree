@@ -34,6 +34,7 @@ class launchNodes(pt.behaviour.Behaviour):
         self.blackboard.register_key(key="map_name", access=pt.common.Access.WRITE)
         self.blackboard.set("mapping_status", "START")
         self.blackboard.register_key(key="localisation_status", access=pt.common.Access.WRITE)
+        self.blackboard.set("localisation_status", "IDLE")
         self.bringup_dir = get_package_share_directory('slam_toolbox')
         self.map_path = self.bringup_dir+'/maps/'+self.map_name
         
@@ -72,8 +73,6 @@ class launchNodes(pt.behaviour.Behaviour):
                 self.logger.info(info)
                 return pt.common.Status.RUNNING
             elif self.blackboard.get("mapping_status")=="RUNNING":
-                # current_coordinate = np.array([self.blackboard.odom_data.position.x, self.blackboard.odom_data.position.y])
-                # dist_from_start_coord = np.linalg.norm(self.blackboard.start_coordinate-current_coordinate)
                 current_time = time.time()
                 time_passed = current_time-self.mapping_start_time
                 if time_passed > self.mapping_time_out:
@@ -82,7 +81,6 @@ class launchNodes(pt.behaviour.Behaviour):
                     self.blackboard.set("mapping_status", "SAVED")
                     self.blackboard.set("localisation_status","START")
                     # terminating the mapping node
-                    # self.mapping_process.terminate()
                     mappinng_process_name = "slam_toolbox"
                     for line in os.popen("ps ax | grep " + mappinng_process_name + " | grep -v grep"): # grep -v grep is used to remove the grep process which is also listed
                         fields = line.split()
